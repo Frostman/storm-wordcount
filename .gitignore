@@ -1,0 +1,14 @@
+logs
+target
+tmp
+target
+.history
+dist
+.idea
+.idea_modules
+*.iml
+*.iws
+*.ipr
+*.db
+.settings
+.DS_Store
