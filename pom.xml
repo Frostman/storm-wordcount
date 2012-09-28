@@ -9,15 +9,22 @@
 
     <name>word-counter</name>
 
+    <description>
+        Simple word counter sample for Twitter Storm
+    </description>
+
+    <developers>
+        <developer>
+            <name>Sergey Lukjanov</name>
+            <email>slukjanov@mirantis.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
-        <repository>
-            <id>github-releases</id>
-            <url>http://oss.sonatype.org/content/repositories/github-releases/</url>
-        </repository>
         <repository>
             <id>clojars.org</id>
             <url>http://clojars.org/repo</url>
