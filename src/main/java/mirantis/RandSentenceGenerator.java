@@ -26,10 +26,10 @@ public class RandSentenceGenerator extends BaseRichSpout {
         this.collector = collector;
         this.random = new Random();
         this.sentences =
-                ("test hello world example" +
-                        " sample hello another" +
+                ("test hello world example\n" +
+                        " sample hello another\n" +
                         " twitter storm one framework"
-                ).split("\\s");
+                ).split("\n");
     }
 
     @Override
