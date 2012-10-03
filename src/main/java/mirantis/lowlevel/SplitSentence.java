@@ -1,4 +1,4 @@
-package mirantis;
+package mirantis.lowlevel;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;

@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>WordCount.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WordCount.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<a name="l1"><span class="s0">package </span><span class="s1">mirantis.lowlevel; 
+<a name="l2"> 
+<a name="l3"></span><span class="s0">import </span><span class="s1">backtype.storm.task.TopologyContext; 
+<a name="l4"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.BasicOutputCollector; 
+<a name="l5"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.OutputFieldsDeclarer; 
+<a name="l6"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.base.BaseBasicBolt; 
+<a name="l7"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Fields; 
+<a name="l8"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Tuple; 
+<a name="l9"></span><span class="s0">import </span><span class="s1">com.google.common.collect.HashMultiset; 
+<a name="l10"></span><span class="s0">import </span><span class="s1">org.apache.log4j.Logger; 
+<a name="l11"> 
+<a name="l12"></span><span class="s0">import </span><span class="s1">java.util.Map; 
+<a name="l13"> 
+<a name="l14"></span><span class="s2">/** 
+<a name="l15"> * </span><span class="s3">@author </span><span class="s2">slukjanov 
+<a name="l16"> */</span><span class="s1"> 
+<a name="l17"></span><span class="s0">public class </span><span class="s1">WordCount </span><span class="s0">extends </span><span class="s1">BaseBasicBolt { 
+<a name="l18"> 
+<a name="l19">    </span><span class="s0">private </span><span class="s1">Logger logger; 
+<a name="l20">    </span><span class="s0">private </span><span class="s1">String name; 
+<a name="l21">    </span><span class="s0">private int </span><span class="s1">task; 
+<a name="l22"> 
+<a name="l23">    </span><span class="s0">private </span><span class="s1">HashMultiset&lt;String&gt; words = HashMultiset.create();<hr> 
+<a name="l24"> 
+<a name="l25">    @Override 
+<a name="l26">    </span><span class="s0">public void </span><span class="s1">prepare(Map conf, TopologyContext ctx) { 
+<a name="l27">        </span><span class="s0">super</span><span class="s1">.prepare(conf, ctx); 
+<a name="l28">        logger = Logger.getLogger(</span><span class="s0">this</span><span class="s1">.getClass()); 
+<a name="l29">        name = ctx.getThisComponentId(); 
+<a name="l30">        task = ctx.getThisTaskIndex(); 
+<a name="l31">    }<hr> 
+<a name="l32"> 
+<a name="l33">    @Override 
+<a name="l34">    </span><span class="s0">public void </span><span class="s1">execute(Tuple tuple, BasicOutputCollector collector) { 
+<a name="l35">        String source = tuple.getSourceComponent(); 
+<a name="l36">        </span><span class="s0">if </span><span class="s1">(</span><span class="s4">&quot;split&quot;</span><span class="s1">.equals(source)) { 
+<a name="l37">            words.add(tuple.getString(</span><span class="s5">0</span><span class="s1">)); 
+<a name="l38">        } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;ping&quot;</span><span class="s1">.equals(source)) { 
+<a name="l39">            logger.warn(</span><span class="s4">&quot;RESULT &quot; </span><span class="s1">+ name + </span><span class="s4">&quot;:&quot; </span><span class="s1">+ task + </span><span class="s4">&quot; :: &quot; </span><span class="s1">+ words); 
+<a name="l40">        } 
+<a name="l41">    }<hr> 
+<a name="l42"> 
+<a name="l43">    @Override 
+<a name="l44">    </span><span class="s0">public void </span><span class="s1">declareOutputFields(OutputFieldsDeclarer declarer) { 
+<a name="l45">        declarer.declare(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">, </span><span class="s4">&quot;count&quot;</span><span class="s1">)); 
+<a name="l46">    } 
+<a name="l47"> 
+<a name="l48">} 
+<a name="l49"></span></pre>
+</body>
+</html>

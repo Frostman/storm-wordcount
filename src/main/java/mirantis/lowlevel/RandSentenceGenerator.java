@@ -1,4 +1,4 @@
-package mirantis;
+package mirantis.lowlevel;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;

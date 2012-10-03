@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>RandSentenceGenerator.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+RandSentenceGenerator.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<a name="l1"><span class="s0">package </span><span class="s1">mirantis.lowlevel; 
+<a name="l2"> 
+<a name="l3"></span><span class="s0">import </span><span class="s1">backtype.storm.spout.SpoutOutputCollector; 
+<a name="l4"></span><span class="s0">import </span><span class="s1">backtype.storm.task.TopologyContext; 
+<a name="l5"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.OutputFieldsDeclarer; 
+<a name="l6"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.base.BaseRichSpout; 
+<a name="l7"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Fields; 
+<a name="l8"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Values; 
+<a name="l9"></span><span class="s0">import </span><span class="s1">backtype.storm.utils.Utils; 
+<a name="l10"> 
+<a name="l11"></span><span class="s0">import </span><span class="s1">java.util.Map; 
+<a name="l12"></span><span class="s0">import </span><span class="s1">java.util.Random; 
+<a name="l13"> 
+<a name="l14"></span><span class="s2">/** 
+<a name="l15"> * </span><span class="s3">@author </span><span class="s2">slukjanov 
+<a name="l16"> */</span><span class="s1"> 
+<a name="l17"></span><span class="s0">public class </span><span class="s1">RandSentenceGenerator </span><span class="s0">extends </span><span class="s1">BaseRichSpout { 
+<a name="l18"> 
+<a name="l19">    </span><span class="s0">private </span><span class="s1">SpoutOutputCollector collector; 
+<a name="l20">    </span><span class="s0">private </span><span class="s1">Random random; 
+<a name="l21"> 
+<a name="l22">    </span><span class="s0">private </span><span class="s1">String[] sentences;<hr> 
+<a name="l23"> 
+<a name="l24">    @Override 
+<a name="l25">    </span><span class="s0">public void </span><span class="s1">open(Map map, TopologyContext ctx, SpoutOutputCollector collector) { 
+<a name="l26">        </span><span class="s0">this</span><span class="s1">.collector = collector; 
+<a name="l27">        </span><span class="s0">this</span><span class="s1">.random = </span><span class="s0">new </span><span class="s1">Random(); 
+<a name="l28">        </span><span class="s0">this</span><span class="s1">.sentences = 
+<a name="l29">                (</span><span class="s4">&quot;test hello world example</span><span class="s0">\n</span><span class="s4">&quot; </span><span class="s1">+ 
+<a name="l30">                        </span><span class="s4">&quot; sample hello another</span><span class="s0">\n</span><span class="s4">&quot; </span><span class="s1">+ 
+<a name="l31">                        </span><span class="s4">&quot; twitter storm one framework&quot;</span><span class="s1"> 
+<a name="l32">                ).split(</span><span class="s4">&quot;</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s1">); 
+<a name="l33">    }<hr> 
+<a name="l34"> 
+<a name="l35">    @Override 
+<a name="l36">    </span><span class="s0">public void </span><span class="s1">nextTuple() { 
+<a name="l37">        Utils.sleep(</span><span class="s5">10</span><span class="s1">); 
+<a name="l38">        String sentence = sentences[random.nextInt(sentences.length)]; 
+<a name="l39">        collector.emit(</span><span class="s0">new </span><span class="s1">Values(sentence)); 
+<a name="l40">    }<hr> 
+<a name="l41"> 
+<a name="l42">    @Override 
+<a name="l43">    </span><span class="s0">public void </span><span class="s1">declareOutputFields(OutputFieldsDeclarer declarer) { 
+<a name="l44">        declarer.declare(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;sentence&quot;</span><span class="s1">)); 
+<a name="l45">    } 
+<a name="l46"> 
+<a name="l47">} 
+<a name="l48"></span></pre>
+</body>
+</html>

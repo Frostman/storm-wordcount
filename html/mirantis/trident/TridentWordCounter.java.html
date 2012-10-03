@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>TridentWordCounter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+TridentWordCounter.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<a name="l1"><span class="s0">package </span><span class="s1">mirantis.trident; 
+<a name="l2"> 
+<a name="l3"></span><span class="s0">import </span><span class="s1">backtype.storm.Config; 
+<a name="l4"></span><span class="s0">import </span><span class="s1">backtype.storm.LocalCluster; 
+<a name="l5"></span><span class="s0">import </span><span class="s1">backtype.storm.LocalDRPC; 
+<a name="l6"></span><span class="s0">import </span><span class="s1">backtype.storm.generated.DRPCExecutionException; 
+<a name="l7"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Fields; 
+<a name="l8"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Values; 
+<a name="l9"></span><span class="s0">import </span><span class="s1">backtype.storm.utils.Utils; 
+<a name="l10"></span><span class="s0">import </span><span class="s1">org.apache.thrift7.TException; 
+<a name="l11"></span><span class="s0">import </span><span class="s1">storm.trident.TridentState; 
+<a name="l12"></span><span class="s0">import </span><span class="s1">storm.trident.TridentTopology; 
+<a name="l13"></span><span class="s0">import </span><span class="s1">storm.trident.operation.builtin.Count; 
+<a name="l14"></span><span class="s0">import </span><span class="s1">storm.trident.operation.builtin.FilterNull; 
+<a name="l15"></span><span class="s0">import </span><span class="s1">storm.trident.operation.builtin.MapGet; 
+<a name="l16"></span><span class="s0">import </span><span class="s1">storm.trident.operation.builtin.Sum; 
+<a name="l17"></span><span class="s0">import </span><span class="s1">storm.trident.testing.FixedBatchSpout; 
+<a name="l18"></span><span class="s0">import </span><span class="s1">storm.trident.testing.MemoryMapState; 
+<a name="l19"></span><span class="s0">import </span><span class="s1">storm.trident.testing.Split; 
+<a name="l20"> 
+<a name="l21"></span><span class="s2">/** 
+<a name="l22"> * </span><span class="s3">@author </span><span class="s2">slukjanov 
+<a name="l23"> */</span><span class="s1"> 
+<a name="l24"></span><span class="s0">public class </span><span class="s1">TridentWordCounter { 
+<a name="l25">    </span><span class="s0">public static void </span><span class="s1">main(String[] args) </span><span class="s0">throws </span><span class="s1">TException, DRPCExecutionException { 
+<a name="l26">        FixedBatchSpout spout = </span><span class="s0">new </span><span class="s1">FixedBatchSpout(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;sentence&quot;</span><span class="s1">), </span><span class="s5">3</span><span class="s1">, 
+<a name="l27">                </span><span class="s0">new </span><span class="s1">Values(</span><span class="s4">&quot;the cow jumped over the moon&quot;</span><span class="s1">), 
+<a name="l28">                </span><span class="s0">new </span><span class="s1">Values(</span><span class="s4">&quot;the man went to the store and bought some candy&quot;</span><span class="s1">), 
+<a name="l29">                </span><span class="s0">new </span><span class="s1">Values(</span><span class="s4">&quot;four score and seven years ago&quot;</span><span class="s1">), 
+<a name="l30">                </span><span class="s0">new </span><span class="s1">Values(</span><span class="s4">&quot;how many apples can you eat&quot;</span><span class="s1">)); 
+<a name="l31">        spout.setCycle(</span><span class="s0">true</span><span class="s1">); 
+<a name="l32"> 
+<a name="l33">        TridentTopology topology = </span><span class="s0">new </span><span class="s1">TridentTopology(); 
+<a name="l34">        TridentState wordCounts = 
+<a name="l35">                topology.newStream(</span><span class="s4">&quot;spout1&quot;</span><span class="s1">, spout) 
+<a name="l36">                        .each(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;sentence&quot;</span><span class="s1">), </span><span class="s0">new </span><span class="s1">Split(), </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">)) 
+<a name="l37">                        .groupBy(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">)) 
+<a name="l38">                        .persistentAggregate(</span><span class="s0">new </span><span class="s1">MemoryMapState.Factory(), </span><span class="s0">new </span><span class="s1">Count(), </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;count&quot;</span><span class="s1">)) 
+<a name="l39">                        .parallelismHint(</span><span class="s5">6</span><span class="s1">); 
+<a name="l40"> 
+<a name="l41">        LocalDRPC client = </span><span class="s0">new </span><span class="s1">LocalDRPC(); </span><span class="s2">// comment in cluster mode</span><span class="s1"> 
+<a name="l42">        topology.newDRPCStream(</span><span class="s4">&quot;words&quot;</span><span class="s1">, client </span><span class="s2">/* don't pass client in cluster mode*/</span><span class="s1">) 
+<a name="l43">                .each(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;args&quot;</span><span class="s1">), </span><span class="s0">new </span><span class="s1">Split(), </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">)) 
+<a name="l44">                .groupBy(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">)) 
+<a name="l45">                .stateQuery(wordCounts, </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">), </span><span class="s0">new </span><span class="s1">MapGet(), </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;count&quot;</span><span class="s1">)) 
+<a name="l46">                .each(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;count&quot;</span><span class="s1">), </span><span class="s0">new </span><span class="s1">FilterNull()) 
+<a name="l47">                .aggregate(</span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;count&quot;</span><span class="s1">), </span><span class="s0">new </span><span class="s1">Sum(), </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;sum&quot;</span><span class="s1">)); 
+<a name="l48"> 
+<a name="l49">        LocalCluster cluster = </span><span class="s0">new </span><span class="s1">LocalCluster(); 
+<a name="l50">        Config config = </span><span class="s0">new </span><span class="s1">Config(); 
+<a name="l51">        config.setMaxSpoutPending(</span><span class="s5">100</span><span class="s1">); 
+<a name="l52">        cluster.submitTopology(</span><span class="s4">&quot;test&quot;</span><span class="s1">, config, topology.build()); 
+<a name="l53"> 
+<a name="l54">        </span><span class="s2">//DRPCClient client = new DRPCClient(&quot;localhost&quot;, 3772); // uncomment in cluster mode</span><span class="s1"> 
+<a name="l55"> 
+<a name="l56">        </span><span class="s0">while </span><span class="s1">(</span><span class="s0">true</span><span class="s1">) { 
+<a name="l57">            Utils.sleep(</span><span class="s5">1000</span><span class="s1">); 
+<a name="l58">            System.out.println(client.execute(</span><span class="s4">&quot;words&quot;</span><span class="s1">, </span><span class="s4">&quot;cat dog the man&quot;</span><span class="s1">)); 
+<a name="l59">            System.out.println(client.execute(</span><span class="s4">&quot;words&quot;</span><span class="s1">, </span><span class="s4">&quot;cat&quot;</span><span class="s1">)); 
+<a name="l60">            System.out.println(client.execute(</span><span class="s4">&quot;words&quot;</span><span class="s1">, </span><span class="s4">&quot;dog&quot;</span><span class="s1">)); 
+<a name="l61">            System.out.println(client.execute(</span><span class="s4">&quot;words&quot;</span><span class="s1">, </span><span class="s4">&quot;the&quot;</span><span class="s1">)); 
+<a name="l62">            System.out.println(client.execute(</span><span class="s4">&quot;words&quot;</span><span class="s1">, </span><span class="s4">&quot;man&quot;</span><span class="s1">)); 
+<a name="l63">            System.out.println(</span><span class="s4">&quot;============================&quot;</span><span class="s1">); 
+<a name="l64">            </span><span class="s2">// prints the JSON-encoded result, e.g.: &quot;[[5078]]&quot;</span><span class="s1"> 
+<a name="l65">        } 
+<a name="l66"> 
+<a name="l67">    } 
+<a name="l68">} 
+<a name="l69"></span></pre>
+</body>
+</html>

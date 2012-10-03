@@ -1,4 +1,4 @@
-package mirantis;
+package mirantis.lowlevel;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;

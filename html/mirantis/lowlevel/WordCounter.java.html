@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>WordCounter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WordCounter.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<a name="l1"><span class="s0">package </span><span class="s1">mirantis.lowlevel; 
+<a name="l2"> 
+<a name="l3"></span><span class="s0">import </span><span class="s1">backtype.storm.Config; 
+<a name="l4"></span><span class="s0">import </span><span class="s1">backtype.storm.LocalCluster; 
+<a name="l5"></span><span class="s0">import </span><span class="s1">backtype.storm.StormSubmitter; 
+<a name="l6"></span><span class="s0">import </span><span class="s1">backtype.storm.topology.TopologyBuilder; 
+<a name="l7"></span><span class="s0">import </span><span class="s1">backtype.storm.tuple.Fields; 
+<a name="l8"> 
+<a name="l9"></span><span class="s2">/** 
+<a name="l10"> * </span><span class="s3">@author </span><span class="s2">slukjanov 
+<a name="l11"> */</span><span class="s1"> 
+<a name="l12"></span><span class="s0">public class </span><span class="s1">WordCounter { 
+<a name="l13"> 
+<a name="l14">    </span><span class="s0">public static void </span><span class="s1">main(String[] args) </span><span class="s0">throws </span><span class="s1">Exception { 
+<a name="l15">        TopologyBuilder builder = </span><span class="s0">new </span><span class="s1">TopologyBuilder(); 
+<a name="l16"> 
+<a name="l17">        builder.setSpout(</span><span class="s4">&quot;source&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">RandSentenceGenerator(), </span><span class="s5">3</span><span class="s1">); 
+<a name="l18">        builder.setSpout(</span><span class="s4">&quot;ping&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">PingSpout()); 
+<a name="l19"> 
+<a name="l20">        builder.setBolt(</span><span class="s4">&quot;split&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">SplitSentence(), </span><span class="s5">8</span><span class="s1">) 
+<a name="l21">                .shuffleGrouping(</span><span class="s4">&quot;source&quot;</span><span class="s1">); 
+<a name="l22">        builder.setBolt(</span><span class="s4">&quot;count&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">WordCount(), </span><span class="s5">12</span><span class="s1">) 
+<a name="l23">                .fieldsGrouping(</span><span class="s4">&quot;split&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">Fields(</span><span class="s4">&quot;word&quot;</span><span class="s1">)) 
+<a name="l24">                .allGrouping(</span><span class="s4">&quot;ping&quot;</span><span class="s1">); 
+<a name="l25"> 
+<a name="l26">        Config conf = </span><span class="s0">new </span><span class="s1">Config(); 
+<a name="l27">        conf.setDebug(</span><span class="s0">true</span><span class="s1">); 
+<a name="l28"> 
+<a name="l29">        </span><span class="s0">if </span><span class="s1">(args != </span><span class="s0">null </span><span class="s1">&amp;&amp; args.length &gt; </span><span class="s5">0</span><span class="s1">) { 
+<a name="l30">            conf.setNumWorkers(</span><span class="s5">3</span><span class="s1">); 
+<a name="l31">            </span><span class="s0">if </span><span class="s1">(args.length &gt; </span><span class="s5">1</span><span class="s1">) { 
+<a name="l32">                conf.setNumWorkers(Integer.parseInt(args[</span><span class="s5">1</span><span class="s1">])); 
+<a name="l33">            } 
+<a name="l34"> 
+<a name="l35">            StormSubmitter.submitTopology(args[</span><span class="s5">0</span><span class="s1">], conf, builder.createTopology()); 
+<a name="l36">        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l37">            conf.setMaxTaskParallelism(</span><span class="s5">3</span><span class="s1">); 
+<a name="l38"> 
+<a name="l39">            LocalCluster cluster = </span><span class="s0">new </span><span class="s1">LocalCluster(); 
+<a name="l40">            cluster.submitTopology(</span><span class="s4">&quot;word-count&quot;</span><span class="s1">, conf, builder.createTopology()); 
+<a name="l41"> 
+<a name="l42">            Thread.sleep(</span><span class="s5">30000</span><span class="s1">); 
+<a name="l43"> 
+<a name="l44">            cluster.shutdown(); 
+<a name="l45">        } 
+<a name="l46">    } 
+<a name="l47"> 
+<a name="l48">} 
+<a name="l49"></span></pre>
+</body>
+</html>
